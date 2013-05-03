@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <script type="text/javascript" src="ear_training.js"></script>
+        <style type="text/css">
+            fieldset {
+                border-radius: 8px;
+            }
+            button {
+                background: #fff;
+                color: #222;
+                border: 1px solid #666;
+            }
+            button:disabled {
+                border: 1px solid #aaa;
+                color: #888;
+            }
+            button:enabled:hover {
+                background: #d0d0d0;
+                color: #111;
+                border: 1px solid #444;
+            }
+            button:enabled:active {
+                background: #c0c0c0;
+            }
+            input {
+                border: 1px solid #888;
+            }
+            input:disabled {
+                border: 1px solid #aaa;
+            }
+        </style>
+        <script type="text/javascript">
+            var ear_trainer = new EarTrainer(440);
+        </script>
+    </head>
+    <body>
+        <label for="base_freq">Base Frequency:</label>
+        <input type="number" id="base_freq" value="440" oninput="ear_trainer.base_freq=this.value" />
+        <fieldset>
+            <legend>Note Training</legend>
+            <button type="button" onclick="
+                    correct_note.value = ear_trainer.play_random_note();
+                    answer_note.disabled   = false;
+                    check_note.disabled  = false;
+                    replay_note.disabled   = false;
+                    show_note.disabled   = false;
+                ">Play Note</button>
+            <span id="note_message"></span>
+            <input list="notes" id="answer_note" maxlength=2 disabled="disabled" />
+            <input type="hidden" id="correct_note" />
+            <button type="button" id="check_note" onclick="
+                if(correct_note.value ==
+                        ear_trainer.note_step_lookup[answer_note.value]) {
+                    note_message.innerHTML = 'Correct';
+                    answer_note.disabled   = true;
+                    check_note.disabled  = true;
+                    replay_note.disabled   = true;
+                    show_note.disabled   = true;
+                } else {
+                    note_message.innerHTML = 'Try Again';
+                }" disabled="disabled" >Check Answer</button>
+            <button type="button" id="replay_note" onclick="ear_trainer.play_note(correct_note.value)"
+                    disabled="disabled" >Replay Note</button>
+            <button type="button" id="show_note" onclick="answer_note.value=ear_trainer.note_symbol_lookup[correct_note.value]"
+                    disabled="disabled" >Show Answer</button>
+        </fieldset>
+        <fieldset>
+            <legend>Note Practice</legend>
+            <button type="button" id="play_note" onclick="ear_trainer.play_note(practice_note.value)"
+                    disabled="disabled" >Play Note</button>
+            <input list="notes" id="practice_note" oninput="
+                    play_note.disabled = !this.value
+                " maxlength=2 />
+        </fieldset>
+        <fieldset>
+            <legend>Tuning Practice</legend>
+            <button type="button" onclick=" ">Play Note</button>
+            <input type="hidden" id="current_pitch" />
+            <input type="radio" name="pitch_answer" value="Flat" />Flat
+            <input type="radio" name="pitch_answer" value="In Tune" />In Tune
+            <input type="radio" name="pitch_answer" value="Sharp" />Sharp
+            <button type="button" id="check_interval" onclick=" " disabled="disabled" >Check Answer</button>
+        </fieldset>
+        <fieldset>
+            <legend>Interval Training</legend>
+            <button type="button" onclick="
+                    var random_note = ear_trainer.random_note();
+                    lower_note.value = random_note;
+                    correct_interval.value = ear_trainer.play_random_interval(random_note);
+                    answer_interval.disabled   = false;
+                    check_interval.disabled    = false;
+                    repeat_interval.disabled   = false;
+                    show_interval.disabled     = false;
+                ">Play Interval</button>
+            <span id="interval_message"></span>
+            <input type="number" id="answer_interval" value="0" disabled="disabled" />
+            <input type="hidden" id="correct_interval" />
+            <input type="hidden" id="lower_note" />
+            <button type="button" id="check_interval" onclick="
+                if(correct_interval.value == answer_interval.value) {
+                    interval_message.innerHTML = 'Correct';
+                    answer_interval.disabled   = true;
+                    check_interval.disabled    = true;
+                    repeat_interval.disabled   = true;
+                    show_interval.disabled     = true;
+                } else {
+                    interval_message.innerHTML = 'Try Again';
+                }" disabled="disabled" >Check Answer</button>
+            <button type="button" id="repeat_interval" onclick="ear_trainer.play_interval(lower_note.value, correct_interval.value)"
+                    disabled="disabled" >Replay Interval</button>
+            <button type="button" id="show_interval" onclick="answer_interval.value=correct_interval.value"
+                    disabled="disabled" >Show Answer</button>
+        </fieldset>
+        <fieldset>
+            <legend>Interval Practice</legend>
+        </fieldset>
+        <datalist id="notes">
+            <option value="Ab" />
+            <option value="A"  />
+            <option value="Bb" />
+            <option value="B"  />
+            <option value="C"  />
+            <option value="C#" />
+            <option value="D"  />
+            <option value="Eb" />
+            <option value="E"  />
+            <option value="F"  />
+            <option value="F#" />
+            <option value="G"  />
+        </datalist>
+    </body>
+</html>
